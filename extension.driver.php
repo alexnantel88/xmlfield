@@ -5,12 +5,12 @@
 		public function about() {
 			return array(
 				'name'			=> 'Field: XML',
-				'version'		=> '1.0',
-				'release-date'	=> '2009-04-29',
+				'version'		=> '1.1',
+				'release-date'	=> '2011-03-22',
 				'author'		=> array(
-					'name'			=> 'Alistair Kearney',
-					'website'		=> 'http://www.symphony21.com',
-					'email'			=> 'alistair@symphony21.com'
+					'name'			=> 'Symphony Team',
+					'website'		=> 'http://symphony-cms/com',
+					'email'			=> 'team@symphony-cms.com'
 				),
 				'description'	=> 'Textarea field that only accepts valid XML'
 			);
