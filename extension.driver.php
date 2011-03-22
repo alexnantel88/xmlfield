@@ -17,11 +17,11 @@
 		}
 		
 		public function uninstall() {
-			$this->_Parent->Database->query("DROP TABLE `tbl_fields_xml`");
+			Symphony::Database()->query("DROP TABLE `tbl_fields_xml`");
 		}
 		
 		public function install() {
-			return $this->_Parent->Database->query("CREATE TABLE IF NOT EXISTS `tbl_fields_xml` (
+			return Symphony::Database()->query("CREATE TABLE IF NOT EXISTS `tbl_fields_xml` (
 			  `id` int(11) unsigned NOT NULL auto_increment,
 			  `field_id` int(11) unsigned NOT NULL,
 			  `size` int(3) unsigned NOT NULL,
