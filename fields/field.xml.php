@@ -3,6 +3,7 @@
 	if (!defined('__IN_SYMPHONY__')) die('<h2>Symphony Error</h2><p>You cannot directly access this file</p>');
 	
 	class FieldXML extends Field {
+		
 		public function __construct(&$parent){
 			parent::__construct($parent);			
 			$this->_name = 'XML';		
@@ -13,16 +14,25 @@
 			$this->set('required', 'yes');
 		}
 		
+		function canFilter(){
+			return true;
+		}
+		
+		public function canImport(){
+			return true;
+		}
+		
 		function displayPublishPanel(&$wrapper, $data=NULL, $flagWithError=NULL, $fieldnamePrefix=NULL, $fieldnamePostfix=NULL){
 			$label = Widget::Label($this->get('label'));
 			if($this->get('required') != 'yes') $label->appendChild(new XMLElement('i', __('Optional')));
 			
 			$textarea = Widget::Textarea('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, $this->get('size'), '50', (strlen($data['value']) != 0 ? General::sanitize($data['value']) : NULL));
 			
-			###
-			# Delegate: ModifyTextareaFieldPublishWidget
-			# Description: Allows developers modify the textarea before it is rendered in the publish forms
-			$this->_engine->ExtensionManager->notifyMembers('ModifyTextareaFieldPublishWidget', '/backend/', array('field' => &$this, 'label' => &$label, 'textarea' => &$textarea));
+			Symphony::ExtensionManager()->notifyMembers('ModifyTextareaFieldPublishWidget', '/backend/', array(
+			    'field' => &$this, 
+			    'label' => &$label, 
+			    'textarea' => &$textarea
+			));
 			
 			$label->appendChild($textarea);
 			
@@ -63,7 +73,7 @@
 			$xsltProc =& new XsltProcess;	
 			
 			if(!General::validateXML($data, $errors, false, $xsltProc)){
-				$message = __('"%1$s" contains invalid XML. The following error was returned: <code>%2$s</code>', array($this->get('label'), $errors[0]['message']));
+				$message = __('"%1$s" contains invalid XML. The following error was returned: <br/><code>%2$s</code>', array($this->get('label'), $errors[0]['message']));
 				return self::__INVALID_FIELDS__;
 			}
 			
@@ -73,38 +83,28 @@
 		
 		public function processRawFieldData($data, &$status, $simulate = false, $entry_id = null) {
 			$status = self::__OK__;
-			
 			return array(
 				'value' => $data
 			);
 		}
 		
-		function displaySettingsPanel(&$wrapper){
-			
-			parent::displaySettingsPanel($wrapper);
+		public function displaySettingsPanel(&$wrapper, $errors = null) {
+			parent::displaySettingsPanel($wrapper, $errors);
 
-			$group = new XMLElement('div', NULL, array('class' => 'group'));
-			
-			$div = new XMLElement('div');
-			
-			## Textarea Size
 			$label = Widget::Label();
 			$input = Widget::Input('fields['.$this->get('sortorder').'][size]', $this->get('size'));
 			$input->setAttribute('size', '3');
 			$label->setValue(__('Make textarea %s rows tall', array($input->generate())));
-			$div->appendChild($label);
-			
+			$wrapper->appendChild($label);
+
+			$div =  new XMLElement('div', NULL, array('class' => 'compact'));
 			$this->appendRequiredCheckbox($div);
-			$group->appendChild($div);
-			$wrapper->appendChild($group);
-			
-			$this->appendShowColumnCheckbox($wrapper);						
+			$this->appendShowColumnCheckbox($div);
+			$wrapper->appendChild($div);				
 		}
 		
 		function createTable(){
-			
-			return $this->_engine->Database->query(
-			
+			return Symphony::Database()->query(
 				"CREATE TABLE IF NOT EXISTS `tbl_entries_data_" . $this->get('id') . "` (
 				  `id` int(11) unsigned NOT NULL auto_increment,
 				  `entry_id` int(11) unsigned NOT NULL,
@@ -115,13 +115,6 @@
 				) TYPE=MyISAM;"
 			
 			);
-		}		
-		function canFilter(){
-			return true;
-		}
-		
-		public function canImport(){
-			return true;
 		}
 		
 		public function buildDSRetrivalSQL($data, &$joins, &$where) {
@@ -177,6 +170,30 @@
 			$label->appendChild(Widget::Textarea('fields['.$this->get('element_name').']', $this->get('size'), 50));
 			
 			return $label;
-		}		
+		}
+		
+		public function prepareTableValue($data, XMLElement $link = null) {
+			$max_length = Symphony::Configuration()->get('cell_truncation_length', 'symphony');
+			$max_length = ($max_length ? $max_length : 75);
+
+			//$value = strip_tags($data['value']);
+			$value = $data['value'];
+			
+			if(function_exists('mb_substr')) {
+				$value = (strlen($value) <= $max_length ? $value : mb_substr($value, 0, $max_length, 'utf-8') . '...');
+			}
+			else {
+				$value = (strlen($value) <= $max_length ? $value : substr($value, 0, $max_length) . '...');
+			}
+
+			if (strlen($value) == 0) $value = __('None');
+
+			if ($link) {
+				$link->setValue(htmlspecialchars($value));
+				return $link->generate();
+			}
+
+			return htmlspecialchars($value);
+		}	
 		
 	}
