@@ -8,9 +8,8 @@
 				'version'		=> '1.1',
 				'release-date'	=> '2011-03-22',
 				'author'		=> array(
-					'name'			=> 'Symphony Team',
-					'website'		=> 'http://symphony-cms/com',
-					'email'			=> 'team@symphony-cms.com'
+					'name'			=> 'Symphony Community',
+					'website'		=> 'https://github.com/symphonists'
 				),
 				'description'	=> 'Textarea field that only accepts valid XML'
 			);
