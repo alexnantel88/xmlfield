@@ -1,19 +1,6 @@
 <?php
 	
 	class extension_XMLField extends Extension {
-
-		public function about() {
-			return array(
-				'name'			=> 'Field: XML',
-				'version'		=> '1.1',
-				'release-date'	=> '2011-03-22',
-				'author'		=> array(
-					'name'			=> 'Symphony Community',
-					'website'		=> 'https://github.com/symphonists'
-				),
-				'description'	=> 'Textarea field that only accepts valid XML'
-			);
-		}
 		
 		public function uninstall() {
 			Symphony::Database()->query("DROP TABLE `tbl_fields_xml`");

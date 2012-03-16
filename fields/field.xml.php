@@ -4,8 +4,8 @@
 	
 	class FieldXML extends Field {
 		
-		public function __construct(&$parent){
-			parent::__construct($parent);			
+		public function __construct(){
+			parent::__construct();			
 			$this->_name = 'XML';		
 			$this->_required = true;
 
@@ -26,7 +26,7 @@
 			$label = Widget::Label($this->get('label'));
 			if($this->get('required') != 'yes') $label->appendChild(new XMLElement('i', __('Optional')));
 			
-			$textarea = Widget::Textarea('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, $this->get('size'), '50', (strlen($data['value']) != 0 ? General::sanitize($data['value']) : NULL));
+			$textarea = Widget::Textarea('fields'.$fieldnamePrefix.'['.$this->get('element_name').']'.$fieldnamePostfix, (int)$this->get('size'), 50, (strlen($data['value']) != 0 ? General::sanitize($data['value']) : NULL));
 			
 			Symphony::ExtensionManager()->notifyMembers('ModifyTextareaFieldPublishWidget', '/backend/', array(
 			    'field' => &$this, 
@@ -53,8 +53,8 @@
 			$fields['field_id'] = $id;
 			$fields['size'] = $this->get('size');
 			
-			$this->_engine->Database->query("DELETE FROM `tbl_fields_".$this->handle()."` WHERE `field_id` = '$id' LIMIT 1");		
-			return $this->_engine->Database->insert($fields, 'tbl_fields_' . $this->handle());
+			Symphony::Database()->query("DELETE FROM `tbl_fields_".$this->handle()."` WHERE `field_id` = '$id' LIMIT 1");		
+			return Symphony::Database()->insert($fields, 'tbl_fields_' . $this->handle());
 					
 		}	
 					
@@ -92,7 +92,7 @@
 			parent::displaySettingsPanel($wrapper, $errors);
 
 			$label = Widget::Label();
-			$input = Widget::Input('fields['.$this->get('sortorder').'][size]', $this->get('size'));
+			$input = Widget::Input('fields['.$this->get('sortorder').'][size]', (string)$this->get('size'));
 			$input->setAttribute('size', '3');
 			$label->setValue(__('Make textarea %s rows tall', array($input->generate())));
 			$wrapper->appendChild($label);
@@ -117,7 +117,7 @@
 			);
 		}
 		
-		public function buildDSRetrivalSQL($data, &$joins, &$where) {
+		public function buildDSRetrievalSQL($data, &$joins, &$where) {
 			$field_id = $this->get('id');
 			
 			if (self::isFilterRegex($data[0])) {
