@@ -13,12 +13,12 @@
 		</author>
 	</authors>
 	<releases>
-		<release version="1.2.1" date="2014-06-25" min="2.4">
+		<release version="1.2.2" date="2014-06-25" min="2.4">
 			- Clean-up
 			- Set monospace font
 		</release>
-		<release version="1.2.0" date="2012-03-16" min="2.3" />
 		<release version="1.2.1" date="2012-05-16" min="2.3" />
+		<release version="1.2.0" date="2012-03-16" min="2.3" />
 		<release version="1.1.0" date="2011-03-22" min="2.2" max="2.2.5" />
 	</releases>
 </extension>
