@@ -91,6 +91,19 @@ class FieldXML extends fieldTextarea
         );
     }
 
+    public function commit()
+    {
+        $id = $this->get('id');
+        if ($id === false) {
+            return false;
+        }
+
+        $fields = array();
+        $fields['size'] = $this->get('size');
+
+        return FieldManager::saveSettings($id, $fields);
+    }    
+
     public function fetchIncludableElements()
     {
         return array(
