@@ -56,27 +56,23 @@ class FieldXML extends fieldTextarea
         );
     }
 
-    public function displaySettingsPanel(&$wrapper, $errors = null)
+    public function displaySettingsPanel(XMLElement &$wrapper, $errors = null)
     {
         Field::displaySettingsPanel($wrapper, $errors);
 
         // Textarea Size
         $label = Widget::Label(__('Number of default rows'));
-        $label->setAttribute('class', 'column');
         $input = Widget::Input('fields['.$this->get('sortorder').'][size]', (string)$this->get('size'));
         $label->appendChild($input);
-        
+
         $div = new XMLElement('div');
-        $div->setAttribute('class', 'two columns');
         $div->appendChild($label);
         $wrapper->appendChild($div);
 
-        $div =  new XMLElement('div', NULL, array('class' => 'two columns'));
-        $this->appendRequiredCheckbox($div);
-        $this->appendShowColumnCheckbox($div);
-        $wrapper->appendChild($div);
+        // Requirements and table display
+        $this->appendStatusFooter($wrapper);
     }
-        
+
     public function createTable()
     {
         return Symphony::Database()->query(
@@ -102,7 +98,7 @@ class FieldXML extends fieldTextarea
         $fields['size'] = $this->get('size');
 
         return FieldManager::saveSettings($id, $fields);
-    }    
+    }
 
     public function fetchIncludableElements()
     {
@@ -111,23 +107,28 @@ class FieldXML extends fieldTextarea
         );
     }
 
-    public function appendFormattedElement(&$wrapper, $data, $encode = false)
+    public function appendFormattedElement(XMLElement &$wrapper, $data, $encode = false, $mode = null, $entry_id = null)
     {
         $value = trim($data['value']);
-        $wrapper->appendChild(new XMLElement($this->get('element_name'), ($encode ? General::sanitize($value) : $value)));
+        $wrapper->appendChild(
+            new XMLElement(
+                $this->get('element_name'),
+                ($encode ? General::sanitize($value) : $value)
+            )
+        );
     }
 
-    public function checkFields(&$required, $checkForDuplicates = true, $checkForParentSection = true)
+    public function checkFields(array &$errors, $checkForDuplicates = true)
     {
         $required = array();
         if ($this->get('size') == '' || !is_numeric($this->get('size'))) {
             $required[] = 'size';
         }
 
-        return parent::checkFields($required, $checkForDuplicates, $checkForParentSection);
+        return parent::checkFields($required, $checkForDuplicates);
     }
 
-    public function prepareTableValue($data, XMLElement $link = null)
+    public function prepareTableValue($data, XMLElement $link = null, $entry_id = null)
     {
         $max_length = Symphony::Configuration()->get('cell_truncation_length', 'symphony');
         $max_length = ($max_length ? $max_length : 75);
