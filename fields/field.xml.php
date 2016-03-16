@@ -89,6 +89,10 @@ class FieldXML extends fieldTextarea
 
     public function commit()
     {
+        $this->set('formatter', 'none');
+        if (!parent::commit()) {
+            return false;
+        }
         $id = $this->get('id');
         if ($id === false) {
             return false;
