@@ -27,9 +27,9 @@ class extension_XMLField extends Extension
     {
         return Symphony::Database()->query(
             "CREATE TABLE IF NOT EXISTS `tbl_fields_xml` (
-                `id` int(11) unsigned NOT NULL auto_increment,
-                `field_id` int(11) unsigned NOT NULL,
-                `size` int(3) unsigned NOT NULL,
+                `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+                `field_id` INT(11) UNSIGNED NOT NULL,
+                `size` INT(3) UNSIGNED NOT NULL,
                 PRIMARY KEY  (`id`),
                 KEY `field_id` (`field_id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"

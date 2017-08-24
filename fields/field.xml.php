@@ -77,9 +77,9 @@ class FieldXML extends fieldTextarea
     {
         return Symphony::Database()->query(
             "CREATE TABLE IF NOT EXISTS `tbl_entries_data_" . $this->get('id') . "` (
-              `id` int(11) unsigned NOT null auto_increment,
-              `entry_id` int(11) unsigned NOT null,
-              `value` text,
+              `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+              `entry_id` INT(11) UNSIGNED NOT NULL,
+              `value` TEXT,
               PRIMARY KEY  (`id`),
               KEY `entry_id` (`entry_id`),
               FULLTEXT KEY `value` (`value`)
