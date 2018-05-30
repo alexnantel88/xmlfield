@@ -25,19 +25,34 @@ class extension_XMLField extends Extension
 
     public function install()
     {
-        return Symphony::Database()->query(
-            "CREATE TABLE IF NOT EXISTS `tbl_fields_xml` (
-                `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-                `field_id` INT(11) UNSIGNED NOT NULL,
-                `size` INT(3) UNSIGNED NOT NULL,
-                PRIMARY KEY  (`id`),
-                KEY `field_id` (`field_id`)
-            ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
-        );
+
+        return Symphony::Database()
+            ->create('tbl_fields_xml')
+            ->ifNotExists()
+            ->charset('utf8')
+            ->collate('utf8_unicode_ci')
+            ->fields([
+                'id' => [
+                    'type' => 'int(11)',
+                    'auto' => true,
+                ],
+                'field_id' => 'int(11)',
+                'size' => 'int(3)',
+            ])
+            ->keys([
+                'id' => 'primary',
+                'field_id' => 'key',
+            ])
+            ->execute()
+            ->success();
     }
 
     public function uninstall()
     {
-        Symphony::Database()->query("DROP TABLE `tbl_fields_xml`");
+        Symphony::Database()
+            ->drop('tbl_fields_xml')
+            ->ifExists()
+            ->execute()
+            ->success();
     }
 }

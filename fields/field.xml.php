@@ -75,16 +75,24 @@ class FieldXML extends fieldTextarea
 
     public function createTable()
     {
-        return Symphony::Database()->query(
-            "CREATE TABLE IF NOT EXISTS `tbl_entries_data_" . $this->get('id') . "` (
-              `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-              `entry_id` INT(11) UNSIGNED NOT NULL,
-              `value` TEXT,
-              PRIMARY KEY  (`id`),
-              KEY `entry_id` (`entry_id`),
-              FULLTEXT KEY `value` (`value`)
-            ) TYPE=MyISAM;"
-        );
+        return Symphony::Database()
+            ->create('tbl_entries_data_' . $this->get('id'))
+            ->ifNotExists()
+            ->fields([
+                'id' => [
+                    'type' => 'int(11)',
+                    'auto' => true,
+                ],
+                'entry_id' => 'int(11)',
+                'value' => 'text',
+            ])
+            ->keys([
+                'id' => 'primary',
+                'entry_id' => 'key',
+                'value' => 'fulltext',
+            ])
+            ->execute()
+            ->success();
     }
 
     public function commit()
