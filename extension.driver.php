@@ -49,7 +49,7 @@ class extension_XMLField extends Extension
 
     public function uninstall()
     {
-        Symphony::Database()
+        return Symphony::Database()
             ->drop('tbl_fields_xml')
             ->ifExists()
             ->execute()
